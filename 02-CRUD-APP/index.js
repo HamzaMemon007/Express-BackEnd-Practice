@@ -1,18 +1,35 @@
 import express from "express"
 import { nanoid } from "nanoid"
+import fs from 'fs'
+import path from 'path'
 
+
+
+const filePath = path.join(process.cwd(), "posts.json");
 const app = express()
 const PORT = 3001
 
 app.use(express.json())
 
-const posts = []
 // Example Body
 /*{
     title: "abc",
     text:"abc"
-}*/
+    }*/
 
+   const readPosts = ()=>{
+       if(!fs.existsSync(filePath)){
+        fs.writeFileSync(filePath, JSON.stringify([]));
+    }
+    const data = fs.readFileSync(filePath)
+    return JSON.parse(data)
+}
+
+const writePosts= (posts) =>{
+    fs.writeFileSync(filePath, JSON.stringify(posts, null, 2))
+}
+
+const posts = readPosts()
 
 
 //Create POST
@@ -30,6 +47,7 @@ app.post('/post', (req, res) => {
             text,
         }
         posts.push(newPost)
+        writePosts(posts)
         res.status(201).json(newPost);
     } catch (error) {
         console.error("Error creating post:", error);
@@ -94,7 +112,7 @@ app.put('/post/:postId', (req, res) => {
 
         if (title) post.title = title
         if (text) post.text = text
-
+        writePosts(posts)
         res.json(post)
 
 
@@ -114,6 +132,7 @@ app.delete('/post/:postId', (req, res) => {
         const postIndex = posts.findIndex((p) => p.id === postId)
         if (postIndex === -1) return res.status(404).json({ error: "Post not found" });
         const deletedPost = posts.splice(postIndex, 1);
+        writePosts(posts)
         res.json({ message: "Post deleted", post: deletedPost[0] });
 
     } catch (error) {
