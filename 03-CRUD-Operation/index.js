@@ -44,3 +44,7 @@ app.get('/posts', (req, res) => {
         })
     }
 })
+
+app.listen(PORT, () => {
+    console.log(`App is Runing on Port ${PORT} Follow Link https://localhost:${PORT}`)
+})
