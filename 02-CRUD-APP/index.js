@@ -2,14 +2,36 @@ import express from "express"
 import { nanoid } from "nanoid"
 import fs from 'fs'
 import path from 'path'
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { log } from "console";
 
 
 
+
+dotenv.config();
+
+const MONGO_URI = process.env.MONGO_URI;
 const filePath = path.join(process.cwd(), "posts.json");
 const app = express()
 const PORT = 3001
 
 app.use(express.json())
+
+// DATABASE CONNECTION
+const connectDB = async () => {
+    if (!MONGO_URI) throw new Error("MONGO_URI not defined in .env")
+    try {
+        console.log(MONGO_URI);
+
+        await mongoose.connect(MONGO_URI)
+        console.log("Connected to DataBase Successfully")
+    } catch (error) {
+        console.log("Error in Connecting DB: : : ", error)
+    }
+
+}
+
 
 // Example Body
 /*{
@@ -17,15 +39,15 @@ app.use(express.json())
     text:"abc"
     }*/
 
-   const readPosts = ()=>{
-       if(!fs.existsSync(filePath)){
+const readPosts = () => {
+    if (!fs.existsSync(filePath)) {
         fs.writeFileSync(filePath, JSON.stringify([]));
     }
     const data = fs.readFileSync(filePath)
     return JSON.parse(data)
 }
 
-const writePosts= (posts) =>{
+const writePosts = (posts) => {
     fs.writeFileSync(filePath, JSON.stringify(posts, null, 2))
 }
 
@@ -144,6 +166,8 @@ app.delete('/post/:postId', (req, res) => {
 })
 
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`App is Runing on PORT ${PORT}`)
+    await connectDB()
+
 })
