@@ -1,4 +1,7 @@
 import express from "express";
+import mongoose from "mongoose";
+import path from "path"
+import fs from "fs"
 
 
 
@@ -12,6 +15,8 @@ app.post( "/post" , (res , req) =>{
     console.log("app is working fine")
     res.send(`App is Running on PORT ${PORT}`)
 })
+
+
 
 app.listen( PORT , () => {
     console.log(`App is Running on PORT ${PORT}`);
