@@ -35,7 +35,7 @@ app.post("/post", async (req, res) => {
                 error : "Tittle & Text are Required"
             })
         }
-        const post = await post.create({
+        const post = await Post.create({
             title,
             text
         })
@@ -52,7 +52,7 @@ app.post("/post", async (req, res) => {
 
 app.get('/posts' , async (req , res) =>{
     try {
-        const post = await post.find().sort({createdAt : -1})
+        const post = await Post.find().sort({createdAt : -1})
         res.status(200).json(post)
     } catch (error) {
         console.error("Contact Your Developer For More Info : Error While Getting Posts" , error)
