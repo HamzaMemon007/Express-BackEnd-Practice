@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import path from "path"
 import dotenv from "dotenv"
 import Post from "./models/Posts.js"
+import cors from "cors"
+
 
 
 
@@ -14,6 +16,7 @@ const PORT = 6565
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 const connectDb = async () => {
     if (!MONGO_URI) throw new Error("MONGO_URI not found please recheck .env")
